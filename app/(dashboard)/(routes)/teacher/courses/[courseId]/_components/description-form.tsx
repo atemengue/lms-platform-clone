@@ -13,23 +13,24 @@ import {
   FormItem,
   FormMessage
 } from "@/components/ui/form";
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Pencil } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
 
-interface TitleFormProps  {
-  initialData: { title: string; },
+interface DescriptionFormProps  {
+  initialData: { description: string; },
   courseId: string
 };
 
 const formSchema = z.object({
-  title: z.string().min(1, { message: "Title is required"})
+  description: z.string().min(1, { message: "Description is required"})
 })
 
-export const TitleForm = ({ initialData, courseId } : TitleFormProps) => {
+export const DescriptionForm = ({ initialData, courseId } : DescriptionFormProps) => {
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -58,7 +59,7 @@ export const TitleForm = ({ initialData, courseId } : TitleFormProps) => {
   return(
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Course title
+        Course description
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing && (
             <>Cancel</>
@@ -66,25 +67,28 @@ export const TitleForm = ({ initialData, courseId } : TitleFormProps) => {
           {!isEditing && (
             <>
               <Pencil className='h-4  w-4 mr-2'/>
-              Edit title
+              Edit Description
             </>
           )}
         </Button>
       </div>
       {!isEditing && (
-        <p className="text-sm mt-2">
-          {initialData.title }
+        <p className={cn(
+          "text-sm mt-2",
+          !initialData.description && "text-slate-500 italic"
+        )}>
+          {initialData.description || "No description" }
         </p> 
       )}
       {isEditing && (
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4 mt-43'>
             <FormField control={form.control}
-            name="title"
+            name="description"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input disabled={isSubmitted} placeholder="e.g 'Advanced web development'" {...field} />
+                  <Textarea disabled={isSubmitted} placeholder="Add course description'" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem> 
