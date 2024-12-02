@@ -80,9 +80,9 @@ export const ImageForm = ({ initialData, courseId } : ImageFormProps) => {
       {isEditing && (
           <div>
             <FileUpload endpoint="courseImage" onChange={(url) => {
-              if(url) { onSubmit({ imageUrl: url }) } else {
-                console.log('empty image URL')
-              }
+              console.log(url);
+              console.log("inside upload file");
+               onSubmit({ imageUrl: `${url}` })
             }}
           />
         <div className='text-xs text-muted-foreground mt-4'>

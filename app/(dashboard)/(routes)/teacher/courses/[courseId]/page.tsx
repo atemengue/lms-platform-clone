@@ -6,20 +6,28 @@ import { redirect } from "next/navigation";
 import { TitleForm } from "./_components/title-form";
 import { DescriptionForm } from "./_components/description-form";
 import { ImageForm } from "./_components/image-form";
+import * as React from 'react'
+import { CategoryForm } from "./_components/category-form";
 
 const CourseIdPage = async ({ params } : { params: { courseId: string }})=> {
 
   const { userId } = await auth();
+  const { courseId } = await params;
 
   if (!userId) {
     return redirect('/')
   }
 
   const course = await db.course.findUnique({
-    where: {
-      id: params.courseId
+    where: { id: courseId } 
+  });
+
+  const categories = await db.category.findMany({
+    orderBy: {
+      name: 'asc'
     }
   });
+
 
   if (!course) {
     return redirect('/');
@@ -57,10 +65,13 @@ const CourseIdPage = async ({ params } : { params: { courseId: string }})=> {
             Customize your course
           </h2>
         </div>
-        <TitleForm initialData={course} courseId={params.courseId} />
-        <DescriptionForm initialData={course} courseId={params.courseId} />
-        <ImageForm initialData={course} courseId={params.courseId} />
-        
+        <TitleForm initialData={course} courseId={courseId} />
+        <DescriptionForm initialData={course} courseId={courseId} />
+        <ImageForm initialData={course} courseId={courseId} />
+        <CategoryForm  initialData={course} courseId={courseId} options={categories.map((category => ({
+          label: category.name,
+          value: category.id        
+        })))} />
       </div>
     </div>
   </div> );
